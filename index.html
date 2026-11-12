@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>KERAN Prototype | Community Evidence Register for Household Tap Outages</title>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{--pd:#34175A;--p:#5B2D90;--pl:#9A7BC9;--lav:#ECE6F5;--bg:#F6F4F9;--y:#F2B300;--yd:#C98F00;--yl:#FFF1BF;--tx:#2E2740;--ok:#2E8B57;--bad:#C0392B}
+*{box-sizing:border-box}
+body{margin:0;font-family:Poppins,system-ui,sans-serif;background:var(--bg);color:var(--tx);font-size:14px}
+body:before,body:after{content:"";position:fixed;border-radius:50%;background:#fff;opacity:.6;z-index:-1}
+body:before{width:520px;height:520px;right:-160px;top:-160px}
+body:after{width:420px;height:420px;left:-160px;bottom:-160px}
+header{display:flex;align-items:center;gap:16px;padding:18px 32px;border-bottom:2px solid var(--y);background:rgba(255,255,255,.7);position:sticky;top:0;backdrop-filter:blur(6px);z-index:5}
+.badge{width:40px;height:40px;border-radius:50%;border:5px solid var(--y);display:grid;place-items:center}
+.badge i{width:18px;height:18px;border-radius:50%;background:var(--p);display:block}
+h1{margin:0;font-size:22px;color:var(--p)} h1 span{color:var(--y)}
+.sub{font-size:12px;color:var(--p);opacity:.85}
+.demo{margin-left:auto;background:var(--yl);color:var(--pd);border:1px solid var(--y);padding:6px 12px;border-radius:20px;font-size:12px;font-weight:600}
+nav{display:flex;gap:8px;padding:16px 32px 0}
+nav button{border:0;background:#fff;color:var(--p);padding:10px 18px;border-radius:12px 12px 0 0;font:600 14px Poppins;cursor:pointer;border-bottom:3px solid transparent}
+nav button.on{background:var(--p);color:#fff;border-bottom-color:var(--y)}
+main{padding:0 32px 40px}
+section{display:none;background:#fff;border:1.5px solid var(--y);border-radius:0 16px 16px 16px;padding:24px}
+section.on{display:block}
+h2{margin:0 0 4px;color:var(--p);font-size:18px} h2 span{color:var(--yd)}
+.hint{margin:0 0 18px;font-size:12.5px;color:#6b6280}
+.grid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}
+label{font-size:12px;font-weight:600;color:var(--pd);display:block;margin-bottom:4px}
+input,select{width:100%;padding:9px 10px;border:1.5px solid var(--lav);border-radius:10px;font:14px Poppins;color:var(--tx);background:#fff}
+input:focus,select:focus{outline:none;border-color:var(--p)}
+.btn{background:var(--p);color:#fff;border:0;border-radius:10px;padding:10px 18px;font:600 14px Poppins;cursor:pointer}
+.btn.y{background:var(--y);color:var(--pd)} .btn.ghost{background:var(--lav);color:var(--p)}
+.btn:hover{filter:brightness(1.08)}
+table{width:100%;border-collapse:collapse;font-size:12.5px;margin-top:10px}
+th{background:var(--p);color:#fff;text-align:left;padding:8px;font-weight:600}
+th:first-child{border-radius:8px 0 0 0} th:last-child{border-radius:0 8px 0 0}
+td{padding:8px;border-bottom:1px solid var(--lav);vertical-align:middle}
+tr:nth-child(even) td{background:#FBFAFD}
+.pill{display:inline-block;padding:2px 9px;border-radius:12px;font-size:11px;font-weight:600}
+.pill.ok{background:#E3F4EA;color:var(--ok)} .pill.no{background:#FBE7E5;color:var(--bad)} .pill.wait{background:var(--yl);color:var(--yd)} .pill.flag{background:#F3E8FF;color:var(--p)}
+.tog{cursor:pointer;border:1px solid var(--lav);background:#fff;border-radius:8px;padding:3px 8px;font:600 11px Poppins;color:var(--p)}
+.kpis{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-bottom:18px}
+.kpi{border:1.5px solid var(--y);border-radius:14px;padding:14px;background:#fff}
+.kpi b{display:block;font-size:26px;color:var(--p)} .kpi small{font-size:12px;color:#6b6280}
+.bars{display:flex;flex-direction:column;gap:9px}
+.bar{display:grid;grid-template-columns:190px 1fr 160px;align-items:center;gap:12px;font-size:13px}
+.track{background:var(--lav);border-radius:8px;height:22px;position:relative;overflow:hidden}
+.fill{height:100%;border-radius:8px;background:var(--p);display:flex;align-items:center;justify-content:flex-end;padding-right:8px;color:#fff;font-size:11px;font-weight:600;transition:width .5s}
+.fill.t12{background:var(--y);color:var(--pd)} .fill.t24{background:var(--bad)}
+.legend{display:flex;gap:16px;font-size:12px;margin:12px 0 0}
+.legend span:before{content:"";display:inline-block;width:12px;height:12px;border-radius:3px;margin-right:6px;vertical-align:-1px;background:var(--c)}
+.claim{border:1.5px dashed var(--y);border-radius:14px;padding:16px;margin-bottom:14px;background:#FFFDF5}
+.claim h3{margin:0 0 6px;font-size:15px;color:var(--pd)}
+.claim pre{white-space:pre-wrap;font:12.5px/1.55 Poppins;background:#fff;border:1px solid var(--lav);border-radius:10px;padding:12px;margin:10px 0}
+.clock{font-weight:700;color:var(--bad)}
+.row{display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin-top:14px}
+.note{font-size:11.5px;color:#6b6280;margin-top:16px;border-top:1px solid var(--lav);padding-top:10px}
+footer{text-align:center;font-size:11.5px;color:var(--p);padding:0 0 26px}
+footer:after{content:"• • • • • • • • •";display:block;color:var(--pl);letter-spacing:2px;margin-top:6px}
+@media(max-width:900px){.grid,.kpis{grid-template-columns:1fr 1fr}.bar{grid-template-columns:120px 1fr}.bar .lab2{display:none}header,nav,main{padding-left:14px;padding-right:14px}}
+</style>
+</head>
+<body>
+<header>
+  <div class="badge"><i></i></div>
+  <div><h1>KERAN <span>Register</span></h1><div class="sub">Community evidence register for household tap outages in Batam</div></div>
+  <div class="demo">Prototype with simulated demo data</div>
+</header>
+<nav>
+  <button class="on" data-t="rec">1 Record</button>
+  <button data-t="ver">2 Verify</button>
+  <button data-t="idx">3 Index</button>
+  <button data-t="clm">4 Claim</button>
+</nav>
+<main>
+<section id="rec" class="on">
+  <h2>Record a <span>tap outage</span></h2>
+  <p class="hint">A registered household reports when its tap stops and when it flows again. Personal details stay private and only aggregated hours per kelurahan are published.</p>
+  <div class="grid">
+    <div><label>Connection ID</label><input id="fConn" placeholder="e.g. NGS-0412"></div>
+    <div><label>Kelurahan</label><select id="fKel"></select></div>
+    <div><label>RT</label><input id="fRT" placeholder="e.g. RT 03"></div>
+    <div><label>Tap stopped</label><input id="fOff" type="datetime-local"></div>
+    <div><label>Tap flowed again (leave blank if still dry)</label><input id="fOn" type="datetime-local"></div>
+    <div><label>Channel</label><select id="fCh"><option>Short message</option><option>Web form</option><option>RT paper log</option></select></div>
+  </div>
+  <div class="row"><button class="btn" id="addBtn">Submit report</button><span id="addMsg" class="hint" style="margin:0"></span></div>
+  <table><thead><tr><th>ID</th><th>Kelurahan</th><th>RT</th><th>Off</th><th>On</th><th>Hours</th><th>Channel</th></tr></thead><tbody id="recBody"></tbody></table>
+</section>
+
+<section id="ver">
+  <h2>Verify each <span>report</span></h2>
+  <p class="hint">Check A is automatic (at least two neighbouring connections in the same kelurahan report an overlapping interval). Check B is the RT head confirmation. Check C compares the report with the operator's distribution schedule and pressure log. A report that passes A and B but conflicts with C is published as a discrepancy flag for the Ombudsman.</p>
+  <table><thead><tr><th>ID</th><th>Kelurahan</th><th>Hours</th><th>A Neighbours</th><th>B RT head</th><th>C Operator log</th><th>Status</th></tr></thead><tbody id="verBody"></tbody></table>
+</section>
+
+<section id="idx">
+  <h2>Outage Hours <span>Index</span></h2>
+  <p class="hint">OHI = verified outage hours in the last 7 days divided by registered connections in the kelurahan. Colour shows the longest verified ongoing outage against the 12 h and 24 h thresholds.</p>
+  <div class="kpis">
+    <div class="kpi"><b id="kRep">0</b><small>reports received</small></div>
+    <div class="kpi"><b id="kVer">0</b><small>verified reports</small></div>
+    <div class="kpi"><b id="kFlag">0</b><small>discrepancy flags</small></div>
+    <div class="kpi"><b id="kClaim">0</b><small>kelurahan above a threshold</small></div>
+  </div>
+  <div class="bars" id="bars"></div>
+  <div class="legend"><span style="--c:var(--p)">below 12 h</span><span style="--c:var(--y)">12 h tanker request</span><span style="--c:var(--bad)">24 h priority claim</span></div>
+</section>
+
+<section id="clm">
+  <h2>Claims triggered by <span>verified evidence</span></h2>
+  <p class="hint">At 12 h KERAN opens a tanker request with a public response clock. At 24 h it drafts a priority claim for SP4N-LAPOR!, addressed to SPAM Batam with a copy to Ombudsman Kepri.</p>
+  <div id="claims"></div>
+</section>
+<p class="note">Prototype for the essay "KERAN, Turning Household Tap Outages into Enforceable Water Priority" (IAWC 2026). All records are simulated for demonstration. Kelurahan names follow areas named in Ombudsman Kepri reports (2026). Thresholds follow Defra (2025) and Ombudsman Kepri (2026a).</p>
+</main>
+<footer>KERAN prototype · Record · Verify · Index · Claim</footer>
+
+<script>
+const KEL={"Sambau":220,"Tiban Baru":260,"Sei Lekop":180,"Tanjung Sengkuang":240,"Tiban Indah":200,"Sagulung Kota":210,"Tanjung Riau":160,"Kabil":150};
+const now=Date.now(),H=3600e3;
+function iso(t){const d=new Date(t);d.setMinutes(d.getMinutes()-d.getTimezoneOffset());return d.toISOString().slice(0,16)}
+const seed=[
+ ["NGS-0412","Sambau","RT 03",-60,null,"Short message",1,1],["NGS-0415","Sambau","RT 03",-58,null,"Web form",1,1],["NGS-0420","Sambau","RT 04",-55,null,"RT paper log",1,1],
+ ["TBR-1102","Tiban Baru","RT 07",-30,-26,"Short message",1,1],["TBR-1108","Tiban Baru","RT 07",-30,-26,"Web form",1,1],["TBR-1111","Tiban Baru","RT 08",-20,null,"Short message",1,1],["TBR-1115","Tiban Baru","RT 08",-19,null,"Short message",1,0],
+ ["SLK-0301","Sei Lekop","RT 02",-15,null,"Web form",1,1],["SLK-0307","Sei Lekop","RT 02",-14,null,"Short message",1,1],
+ ["TSK-2201","Tanjung Sengkuang","RT 11",-40,-30,"RT paper log",1,1],["TSK-2204","Tanjung Sengkuang","RT 11",-39,-30,"Short message",1,1],["TSK-2210","Tanjung Sengkuang","RT 12",-8,null,"Short message",0,1],
+ ["SGK-0505","Sagulung Kota","RT 05",-6,-2,"Web form",0,1],["TRI-0601","Tanjung Riau","RT 01",-10,-4,"Short message",1,1],["TRI-0603","Tanjung Riau","RT 01",-10,-4,"Web form",1,1]
+];
+let reports;
+try{reports=JSON.parse(localStorage.getItem("keran_reports")||"null")}catch(e){reports=null}
+if(!reports){reports=seed.map(s=>({id:s[0],kel:s[1],rt:s[2],off:now+s[3]*H,on:s[4]==null?null:now+s[4]*H,ch:s[5],b:!!s[6],c:!!s[7]}))}
+function save(){try{localStorage.setItem("keran_reports",JSON.stringify(reports))}catch(e){}}
+const hrs=r=>((r.on||Date.now())-r.off)/H;
+const fmt=t=>t?new Date(t).toLocaleString("en-GB",{day:"2-digit",month:"short",hour:"2-digit",minute:"2-digit"}):"still dry";
+function checkA(r){return reports.filter(o=>o!==r&&o.kel===r.kel&&o.off<(r.on||Date.now())&&(o.on||Date.now())>r.off).length>=1}
+function status(r){const a=checkA(r);if(a&&r.b&&r.c)return"ok";if(a&&r.b&&!r.c)return"flag";return"wait"}
+document.querySelectorAll("nav button").forEach(b=>b.onclick=()=>{document.querySelectorAll("nav button,section").forEach(x=>x.classList.remove("on"));b.classList.add("on");document.getElementById(b.dataset.t).classList.add("on");render()});
+const sel=document.getElementById("fKel");Object.keys(KEL).forEach(k=>sel.add(new Option(k,k)));
+document.getElementById("fOff").value=iso(now-2*H);
+document.getElementById("addBtn").onclick=()=>{
+ const id=fConn.value.trim(),off=Date.parse(fOff.value),on=fOn.value?Date.parse(fOn.value):null,m=document.getElementById("addMsg");
+ if(!id||isNaN(off)){m.textContent="Fill in the connection ID and the time the tap stopped.";return}
+ if(on&&on<=off){m.textContent="The tap cannot flow again before it stopped.";return}
+ reports.unshift({id,kel:fKel.value,rt:fRT.value||"RT -",off,on,ch:fCh.value,b:false,c:false});save();
+ m.textContent="Report recorded. It now waits for verification.";fConn.value="";render()};
+function render(){
+ recBody.innerHTML=reports.map(r=>`<tr><td>${r.id}</td><td>${r.kel}</td><td>${r.rt}</td><td>${fmt(r.off)}</td><td>${fmt(r.on)}</td><td>${hrs(r).toFixed(1)}</td><td>${r.ch}</td></tr>`).join("");
+ verBody.innerHTML=reports.map((r,i)=>{const a=checkA(r),s=status(r);
+  return `<tr><td>${r.id}</td><td>${r.kel}</td><td>${hrs(r).toFixed(1)}</td>
+  <td><span class="pill ${a?"ok":"no"}">${a?"match":"no match"}</span></td>
+  <td><button class="tog" onclick="tg(${i},'b')">${r.b?"confirmed":"confirm"}</button></td>
+  <td><button class="tog" onclick="tg(${i},'c')">${r.c?"consistent":"not in log"}</button></td>
+  <td><span class="pill ${s}">${s==="ok"?"verified":s==="flag"?"discrepancy flag":"pending"}</span></td></tr>`}).join("");
+ const ver=reports.filter(r=>status(r)==="ok"),week=Date.now()-7*24*H;
+ const rows=Object.keys(KEL).map(k=>{const v=ver.filter(r=>r.kel===k);
+  const hsum=v.reduce((s,r)=>s+Math.max(0,((r.on||Date.now())-Math.max(r.off,week))/H),0);
+  const ongoing=v.filter(r=>!r.on).map(hrs);const longest=v.length?Math.max(...v.map(hrs)):0;const cur=ongoing.length?Math.max(...ongoing):0;
+  return{k,ohi:hsum/KEL[k],n:v.length,cur,longest}}).sort((a,b)=>b.ohi-a.ohi);
+ const mx=Math.max(...rows.map(r=>r.ohi),0.01);
+ bars.innerHTML=rows.map(r=>{const c=r.cur>=24?"t24":r.cur>=12?"t12":"";
+  return `<div class="bar"><div><b>${r.k}</b></div><div class="track"><div class="fill ${c}" style="width:${Math.max(8,r.ohi/mx*100)}%">${r.ohi.toFixed(3)}</div></div><div class="lab2">${r.n} verified, longest ${r.longest.toFixed(0)} h</div></div>`}).join("");
+ kRep.textContent=reports.length;kVer.textContent=ver.length;kFlag.textContent=reports.filter(r=>status(r)==="flag").length;
+ const trig=rows.filter(r=>r.cur>=12);kClaim.textContent=trig.length;
+ claims.innerHTML=trig.length?trig.map(r=>{const t24=r.cur>=24,due=12-(r.cur-12);
+  const letter=t24?`To SPAM Batam, BP Batam (via SP4N-LAPOR!)\nCopy to Ombudsman RI Perwakilan Kepulauan Riau\n\nSubject  Priority claim for basic daily water needs, Kelurahan ${r.k}\n\nThe KERAN register records ${r.n} verified household reports in Kelurahan ${r.k}. The longest ongoing outage has lasted ${r.cur.toFixed(0)} hours, beyond the 24-hour continuity standard. Each report passed neighbour matching, RT confirmation and comparison with the operator log.\n\nWe request that (1) basic daily needs be given priority in every allocation serving this zone, including non-domestic users, in line with the priority order of Permen PUPR 2/2024, (2) metered non-domestic offtake in this zone be disclosed, and (3) a restoration schedule be published within 24 hours.`
+  :`Tanker request, Kelurahan ${r.k}\nLongest verified ongoing outage ${r.cur.toFixed(0)} hours (threshold 12 hours).\nRequested from SPAM Batam and its operator. Response clock is public.`;
+  return `<div class="claim"><h3>${t24?"24 h PRIORITY CLAIM":"12 h TANKER REQUEST"} · ${r.k}</h3>
+  <div>${t24?"Status <b>ready to file</b>":`Response clock <span class="clock">${Math.max(0,due).toFixed(1)} h remaining</span> before escalation to a 24 h claim`}</div>
+  <pre>${letter}</pre><button class="btn y" onclick="navigator.clipboard&&navigator.clipboard.writeText(this.previousElementSibling.textContent)">Copy text</button></div>`}).join("")
+  :`<p class="hint">No kelurahan has crossed a threshold. Verify more reports in tab 2.</p>`;
+}
+function tg(i,k){reports[i][k]=!reports[i][k];save();render()}
+render();setInterval(render,60000);
+</script>
+</body>
+</html>
